@@ -1,0 +1,7 @@
+fastapi
+alembic
+SQLAlchemy
+python-jose
+passlib
+uvicorn
+bcrypt==4.0.1
