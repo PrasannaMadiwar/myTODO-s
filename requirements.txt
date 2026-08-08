@@ -5,3 +5,7 @@ python-jose
 passlib
 uvicorn
 bcrypt==4.0.1
+requests
+apscheduler
+pytz
+resend

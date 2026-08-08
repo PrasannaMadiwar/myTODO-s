@@ -1,17 +1,14 @@
 from fastapi import FastAPI,Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from models import User, Todos, session
+from models import User, Todos
+from dependecies import get_db
 from schemas import UserBase, TodoBase
 from sqlalchemy.orm import Session
 from response_schemas import UserResponse, TodoResponse
 from auth import pwd_context, create_access_token, verify_access_token
+from background_tasks import add_background_mail
 
-def get_db():
-    db = session()
-    try:
-        yield db
-    finally:
-        db.close()
+ 
 
 
 app = FastAPI(description="A simple TODO application with user authentication and task management.")
@@ -32,7 +29,7 @@ def create_user(user: UserBase, db: Session = Depends(get_db)):
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists.")
     
-    new_user = User(username=user.username, password= pwd_context.hash(user.password))
+    new_user = User(username=user.username, password= pwd_context.hash(user.password), user_email=user.user_email)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -61,11 +58,12 @@ def create_todo(todo: TodoBase, db: Session = Depends(get_db), current_user: str
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
     
-    new_todo = Todos(title=todo.title, time=todo.time, username=current_user, is_completed=todo.is_completed)
+    new_todo = Todos(title=todo.title, username=current_user, time=todo.time, is_completed=todo.is_completed)
     db.add(new_todo)
     db.commit()
     db.refresh(new_todo)
-    return {"message": "Todo created successfully.", "todo": new_todo}
+    add_background_mail(to_email=user.user_email, subject=f"Reminder: {todo.title}", description=f"Your task '{todo.title}' is scheduled for {todo.time}.", send_time=todo.time)
+    return new_todo
 
 
 
