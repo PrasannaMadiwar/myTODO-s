@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Column, String, Integer, DATETIME, Foreign
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 
 Base = declarative_base()
-engine = create_engine("sqlite:///./todo.db", echo=True)
+engine = create_engine("sqlite:///./apps\\api\\databases\\todo.db", echo=True)
 session = sessionmaker(bind=engine)
 
 

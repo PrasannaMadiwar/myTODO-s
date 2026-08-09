@@ -1,5 +1,5 @@
 import resend
-from configuration import Settings
+from apps.api.source.configuration import Settings
 
 resend.api_key = Settings.RESEND_API_KEY
 
