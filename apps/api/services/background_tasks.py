@@ -1,10 +1,11 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+from apps.api.source.configuration import Settings
 from apps.api.services.mail_service import send_email
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-jobstore = SQLAlchemyJobStore(url='sqlite:///apps\\api\\databases\\jobs.sqlite')
+jobstore = SQLAlchemyJobStore(url=Settings.DATABASE_URL)
 scheduler = BackgroundScheduler(jobstores={'default': jobstore}, timezone=ZoneInfo("Asia/Kolkata"))
 
 scheduler.start()

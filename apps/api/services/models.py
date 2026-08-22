@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine, Column, String, Integer, DATETIME, ForeignKey, Boolean
+from sqlalchemy import create_engine, Column, String, Integer, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
+from apps.api.source.configuration import Settings
+
 
 Base = declarative_base()
-engine = create_engine("sqlite:///./apps\\api\\databases\\todo.db", echo=True)
+engine = create_engine(Settings.DATABASE_URL, echo=True)
 session = sessionmaker(bind=engine)
 
 
@@ -23,7 +25,7 @@ class Todos(Base):
     __tablename__ = "todos"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
-    time = Column(DATETIME, nullable=False)
+    time = Column(DateTime, nullable=False)
     is_completed = Column(Boolean, default=False)
     username = Column(String, ForeignKey('users.username'), nullable=False)
 
