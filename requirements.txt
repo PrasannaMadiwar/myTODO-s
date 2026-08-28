@@ -9,3 +9,6 @@ requests
 apscheduler
 pytz
 resend
+dotenv
+psycopg2
+python-multipart
