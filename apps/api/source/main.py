@@ -8,11 +8,20 @@ from sqlalchemy.orm import Session
 from apps.api.pydantic_schemas.response_schemas import UserResponse, TodoResponse
 from apps.api.services.auth import pwd_context, create_access_token, verify_access_token
 from apps.api.services.background_tasks import add_background_mail, remove_background_mail, add_daily_background_mail, add_weekly_background_mail, add_monthly_background_mail
+from fastapi.middleware.cors import CORSMiddleware
 
  
-
-
 app = FastAPI(description="A simple TODO application with user authentication and task management.")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://your-vercel-domain.vercel.app",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
  
 
 @app.get("/")
